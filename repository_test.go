@@ -2,6 +2,7 @@ package qry_test
 
 import (
 	"context"
+	"database/sql"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/TomWright/qry"
 	"testing"
@@ -101,7 +102,9 @@ func TestRepository_QueryRow(t *testing.T) {
 				return
 			}
 
-			defer db.Close()
+			defer func(db *sql.DB) {
+				_ = db.Close()
+			}(db)
 
 			tc.mockFn(mock)
 
@@ -130,7 +133,7 @@ func TestRepository_QueryRow(t *testing.T) {
 
 			values := make([]any, numColumns)
 			valuePointers := make([]any, numColumns)
-			for k, _ := range values {
+			for k := range values {
 				valuePointers[k] = &values[k]
 			}
 
