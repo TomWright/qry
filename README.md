@@ -20,7 +20,7 @@ Please note that qry is in active development and API changes are possible, alth
 
 ## Quickstart
 
-Dasel is available on [homebrew](https://daseldocs.tomwright.me/installation#homebrew), [ASDF](https://daseldocs.tomwright.me/installation#asdf), [scoop](https://daseldocs.tomwright.me/installation#scoop), [docker](https://daseldocs.tomwright.me/installation#docker), [Nix](https://daseldocs.tomwright.me/installation#nix) or as [compiled binaries](https://daseldocs.tomwright.me/installation#manual) from the [latest release](https://github.com/TomWright/dasel/releases/latest).
+Installation with go modules is simple.
 
 ```bash
 go get github.com/TomWright/qry
