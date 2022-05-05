@@ -25,3 +25,7 @@ Installation with go modules is simple.
 ```bash
 go get github.com/TomWright/qry
 ```
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/TomWright/qry.svg)](https://starchart.cc/TomWright/qry)
