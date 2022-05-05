@@ -50,8 +50,8 @@ func TestRepository_QueryRow(t *testing.T) {
 				return query
 			},
 			exp: map[string]any{
-				"uuid": "11112222-3333-4444-5555-666677778888",
-				"name": "Tom",
+				"uuid":     "11112222-3333-4444-5555-666677778888",
+				"username": "Tom",
 			},
 			mockFn: func(db sqlmock.Sqlmock) {
 				db.ExpectPrepare("SELECT uuid, username FROM user").
@@ -105,10 +105,15 @@ func TestRepository_QueryRow(t *testing.T) {
 
 			tc.mockFn(mock)
 
+			var query qry.SelectQuery
 			repo := qry.Repository{
 				DB:                   db,
 				Table:                tc.table,
 				StandardSelectFields: tc.selectFields,
+				PreSelectFn: func(ctx context.Context, innerQuery qry.Query) error {
+					query = innerQuery.(qry.SelectQuery)
+					return nil
+				},
 			}
 
 			row, err := repo.QueryRow(context.Background(), tc.query())
@@ -117,15 +122,14 @@ func TestRepository_QueryRow(t *testing.T) {
 				return
 			}
 
-			columns := make([]string, len(tc.exp))
-			columnIndex := 0
-			for column, _ := range tc.exp {
-				columns[columnIndex] = column
-				columnIndex++
+			numColumns := len(query.Fields)
+			columns := make([]string, numColumns)
+			for index, column := range query.Fields {
+				columns[index] = string(column)
 			}
 
-			values := make([]any, columnIndex)
-			valuePointers := make([]any, columnIndex)
+			values := make([]any, numColumns)
+			valuePointers := make([]any, numColumns)
 			for k, _ := range values {
 				valuePointers[k] = &values[k]
 			}

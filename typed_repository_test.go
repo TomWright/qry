@@ -101,7 +101,6 @@ func TestTypedRepository_QueryRow(t *testing.T) {
 				ID:   0,
 				Name: "Tom",
 			},
-
 			mockFn: func(db sqlmock.Sqlmock) {
 				db.ExpectPrepare("SELECT name FROM users WHERE id = ?").
 					ExpectQuery().
