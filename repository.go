@@ -24,7 +24,7 @@ type Repository struct {
 
 func (repo Repository) QueryFn(ctx context.Context, queryFn func(*SelectQuery)) (*sql.Rows, error) {
 	if repo.Tracer != nil {
-		spanCtx, span := repo.Tracer().Start(ctx, "QueryFn")
+		spanCtx, span := repo.Tracer.Start(ctx, "QueryFn")
 		ctx = spanCtx
 		defer span.End()
 	}
@@ -36,7 +36,7 @@ func (repo Repository) QueryFn(ctx context.Context, queryFn func(*SelectQuery)) 
 
 func (repo Repository) Query(ctx context.Context, query SelectQuery) (*sql.Rows, error) {
 	if repo.Tracer != nil {
-		spanCtx, span := repo.Tracer().Start(ctx, "Query")
+		spanCtx, span := repo.Tracer.Start(ctx, "Query")
 		ctx = spanCtx
 		defer span.End()
 	}
@@ -72,7 +72,7 @@ func (repo Repository) Query(ctx context.Context, query SelectQuery) (*sql.Rows,
 
 func (repo Repository) QueryRowFn(ctx context.Context, queryFn func(*SelectQuery)) (*sql.Row, error) {
 	if repo.Tracer != nil {
-		spanCtx, span := repo.Tracer().Start(ctx, "QueryRowFn")
+		spanCtx, span := repo.Tracer.Start(ctx, "QueryRowFn")
 		ctx = spanCtx
 		defer span.End()
 	}
@@ -84,7 +84,7 @@ func (repo Repository) QueryRowFn(ctx context.Context, queryFn func(*SelectQuery
 
 func (repo Repository) QueryRow(ctx context.Context, query SelectQuery) (*sql.Row, error) {
 	if repo.Tracer != nil {
-		spanCtx, span := repo.Tracer().Start(ctx, "QueryRow")
+		spanCtx, span := repo.Tracer.Start(ctx, "QueryRow")
 		ctx = spanCtx
 		defer span.End()
 	}
@@ -121,7 +121,7 @@ func (repo Repository) QueryRow(ctx context.Context, query SelectQuery) (*sql.Ro
 
 func (repo Repository) UpdateFn(ctx context.Context, queryFn func(*UpdateQuery)) (sql.Result, error) {
 	if repo.Tracer != nil {
-		spanCtx, span := repo.Tracer().Start(ctx, "UpdateFn")
+		spanCtx, span := repo.Tracer.Start(ctx, "UpdateFn")
 		ctx = spanCtx
 		defer span.End()
 	}
@@ -133,7 +133,7 @@ func (repo Repository) UpdateFn(ctx context.Context, queryFn func(*UpdateQuery))
 
 func (repo Repository) Update(ctx context.Context, query UpdateQuery) (sql.Result, error) {
 	if repo.Tracer != nil {
-		spanCtx, span := repo.Tracer().Start(ctx, "Update")
+		spanCtx, span := repo.Tracer.Start(ctx, "Update")
 		ctx = spanCtx
 		defer span.End()
 	}
@@ -151,7 +151,7 @@ func (repo Repository) Update(ctx context.Context, query UpdateQuery) (sql.Resul
 
 func (repo Repository) DeleteFn(ctx context.Context, queryFn func(*DeleteQuery)) (sql.Result, error) {
 	if repo.Tracer != nil {
-		spanCtx, span := repo.Tracer().Start(ctx, "DeleteFn")
+		spanCtx, span := repo.Tracer.Start(ctx, "DeleteFn")
 		ctx = spanCtx
 		defer span.End()
 	}
@@ -163,7 +163,7 @@ func (repo Repository) DeleteFn(ctx context.Context, queryFn func(*DeleteQuery))
 
 func (repo Repository) Delete(ctx context.Context, query DeleteQuery) (sql.Result, error) {
 	if repo.Tracer != nil {
-		spanCtx, span := repo.Tracer().Start(ctx, "Delete")
+		spanCtx, span := repo.Tracer.Start(ctx, "Delete")
 		ctx = spanCtx
 		defer span.End()
 	}
@@ -181,7 +181,7 @@ func (repo Repository) Delete(ctx context.Context, query DeleteQuery) (sql.Resul
 
 func (repo Repository) InsertFn(ctx context.Context, queryFn func(*InsertQuery)) (sql.Result, error) {
 	if repo.Tracer != nil {
-		spanCtx, span := repo.Tracer().Start(ctx, "InsertFn")
+		spanCtx, span := repo.Tracer.Start(ctx, "InsertFn")
 		ctx = spanCtx
 		defer span.End()
 	}
@@ -193,7 +193,7 @@ func (repo Repository) InsertFn(ctx context.Context, queryFn func(*InsertQuery))
 
 func (repo Repository) Insert(ctx context.Context, query InsertQuery) (sql.Result, error) {
 	if repo.Tracer != nil {
-		spanCtx, span := repo.Tracer().Start(ctx, "Insert")
+		spanCtx, span := repo.Tracer.Start(ctx, "Insert")
 		ctx = spanCtx
 		defer span.End()
 	}
@@ -244,7 +244,7 @@ func (repo Repository) Exec(ctx context.Context, query Query) (sql.Result, error
 	var span trace.Span = nil
 
 	if repo.Tracer != nil {
-		ctx, span = repo.Tracer().Start(ctx, "Exec")
+		ctx, span = repo.Tracer.Start(ctx, "Exec")
 		defer span.End()
 	}
 
