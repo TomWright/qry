@@ -31,6 +31,10 @@ func (query *ConditionGroup) Build() (string, []any) {
 	parts := make([]string, 0)
 	args := make([]any, 0)
 
+	if len(query.Conditions) == 0 {
+		return "", args
+	}
+
 	if len(query.Conditions) > 0 {
 		for _, cs := range query.Conditions {
 			part, partArgs := cs.Build()
@@ -42,10 +46,6 @@ func (query *ConditionGroup) Build() (string, []any) {
 	sep := " AND "
 	if query.Or {
 		sep = " OR "
-	}
-
-	if len(parts) == 0 {
-		return "", args
 	}
 
 	return fmt.Sprintf("(%s)", strings.Join(parts, sep)), args
