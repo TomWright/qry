@@ -44,6 +44,10 @@ func (query *ConditionGroup) Build() (string, []any) {
 		sep = " OR "
 	}
 
+	if len(parts) == 0 {
+		return "", args
+	}
+
 	return fmt.Sprintf("(%s)", strings.Join(parts, sep)), args
 }
 

@@ -284,6 +284,12 @@ func TestAnd(t *testing.T) {
 	}
 	tests := []def{
 		{
+			name:       "Zero Conditions",
+			conditions: []qry.Condition{},
+			expStmt:    "",
+			expArgs:    []any{},
+		},
+		{
 			name:       "One Condition",
 			conditions: []qry.Condition{qry.Equal("name", "Tom")},
 			expStmt:    "(name = ?)",
