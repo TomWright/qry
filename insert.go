@@ -54,6 +54,15 @@ type TypedInsertQuery[T any] struct {
 	Targets []*T
 }
 
+func findFieldIndex(field Field, columns []Field) int {
+	for i, f := range columns {
+		if f == field {
+			return i
+		}
+	}
+	panic("field not found in columns")
+}
+
 func (query TypedInsertQuery[T]) Prepare() InsertQuery {
 	var columns []Field = nil
 	values := make([][]any, 0)
@@ -74,10 +83,9 @@ func (query TypedInsertQuery[T]) Prepare() InsertQuery {
 
 		// Extract the values
 		rowValues := make([]any, len(targetValues))
-		rowValueIndex := 0
-		for _, v := range targetValues {
+		for field, v := range targetValues {
+			rowValueIndex := findFieldIndex(field, columns)
 			rowValues[rowValueIndex] = v
-			rowValueIndex++
 		}
 
 		values = append(values, rowValues)
