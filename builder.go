@@ -2,79 +2,11 @@ package qry
 
 import (
 	"fmt"
-	"strings"
 )
 
 // Query is an SQL query.
 type Query interface {
 	Build() (string, []any)
-}
-
-// Condition is a condition that can be used in a where clause.
-type Condition interface {
-	// Build returns an SQL statement and the related args.
-	Build() (string, []any)
-}
-
-// ConditionGroup is a Condition made up of many Conditions separated by an AND or an OR.
-type ConditionGroup struct {
-	Conditions []Condition
-	Or         bool
-}
-
-// Build returns an SQL statement and the related args.
-// The statement is already wrapped in brackets.
-func (query *ConditionGroup) Build() (string, []any) {
-	if query == nil {
-		return "", make([]any, 0)
-	}
-	parts := make([]string, 0)
-	args := make([]any, 0)
-
-	if len(query.Conditions) == 0 {
-		return "", args
-	}
-
-	if len(query.Conditions) > 0 {
-		for _, cs := range query.Conditions {
-			part, partArgs := cs.Build()
-			parts = append(parts, part)
-			args = append(args, partArgs...)
-		}
-	}
-
-	sep := " AND "
-	if query.Or {
-		sep = " OR "
-	}
-
-	return fmt.Sprintf("(%s)", strings.Join(parts, sep)), args
-}
-
-// SimpleCondition is a Condition that can be used to make a basic comparison.
-// E.g. user_id = "123"
-type SimpleCondition struct {
-	Field      Field
-	Value      any
-	Comparison string
-}
-
-// Build returns an SQL statement and the related args.
-func (query *SimpleCondition) Build() (string, []any) {
-	stmt := fmt.Sprintf("%s %s ?", query.Field, query.Comparison)
-	args := []any{query.Value}
-	return stmt, args
-}
-
-// RawCondition is a Condition that can be used to make more complex comparisons.
-type RawCondition struct {
-	SQL  string
-	Args []any
-}
-
-// Build returns an SQL statement and the related args.
-func (query *RawCondition) Build() (string, []any) {
-	return query.SQL, query.Args
 }
 
 // And returns a ConditionGroup made up of many Conditions separated an AND.

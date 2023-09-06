@@ -13,6 +13,7 @@ type SelectQuery struct {
 	Fields    []Field
 	Table     string
 	Condition Condition
+	OrderBy   []OrderBy
 	Limit     int64
 	Offset    int64
 }
@@ -31,6 +32,10 @@ func (query SelectQuery) Build() (string, []any) {
 			stmt += fmt.Sprintf(" WHERE %s", conditionsStmt)
 			args = append(args, conditionArgs...)
 		}
+	}
+
+	if len(query.OrderBy) > 0 {
+		stmt += fmt.Sprintf(" ORDER BY %s", genericJoin(query.OrderBy, ", "))
 	}
 
 	if query.Limit > 0 {

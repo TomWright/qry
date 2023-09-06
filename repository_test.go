@@ -89,6 +89,43 @@ func TestRepository_QueryRow(t *testing.T) {
 					RowsWillBeClosed()
 			},
 		},
+		{
+			name: "Select with equal condition and order by",
+			query: func() qry.SelectQuery {
+				query := qry.Select()
+				query.Table = "users"
+				query.Fields = []qry.Field{"id", "name"}
+				query.Condition = qry.Equal("id", 1)
+				query.OrderBy = []qry.OrderBy{
+					{
+						Field:     "name",
+						Direction: qry.Descending,
+					},
+					{
+						Field:     "id",
+						Direction: qry.Ascending,
+					},
+				}
+				query.Limit = 5
+				query.Offset = 2
+				return query
+			},
+			exp: map[string]any{
+				"id":   int64(1),
+				"name": "Tom",
+			},
+
+			mockFn: func(db sqlmock.Sqlmock) {
+				db.ExpectPrepare("SELECT id, name FROM users WHERE id = ? ORDER BY name DESC, id ASC LIMIT 5 OFFSET 2").
+					ExpectQuery().
+					WithArgs(1).
+					WillReturnRows(
+						sqlmock.NewRows([]string{"id", "name"}).
+							AddRow(1, "Tom"),
+					).
+					RowsWillBeClosed()
+			},
+		},
 	}
 
 	for _, test := range tests {
