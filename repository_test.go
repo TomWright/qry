@@ -272,6 +272,43 @@ func TestRepository_Query(t *testing.T) {
 					RowsWillBeClosed()
 			},
 		},
+		{
+			name: "Select with join",
+			query: func() qry.SelectQuery {
+				query := qry.Select()
+				query.Table = "users"
+				query.Fields = []qry.Field{"users.id", "users.name", "addresses.street"}
+				query.Condition = qry.Equal("id", 1)
+				query.Join = []qry.Join{
+					{
+						Table: "addresses",
+						On: &qry.RawCondition{
+							SQL: "users.id = addresses.user_id",
+						},
+						Type: "OUTER",
+					},
+				}
+				return query
+			},
+			exp: []map[string]any{
+				{
+					"users.id":         int64(1),
+					"users.name":       "Tom",
+					"addresses.street": "Street Name",
+				},
+			},
+
+			mockFn: func(db sqlmock.Sqlmock) {
+				db.ExpectPrepare("SELECT users.id, users.name, addresses.street FROM users OUTER JOIN addresses ON users.id = addresses.user_id WHERE id = ?").
+					ExpectQuery().
+					WithArgs(1).
+					WillReturnRows(
+						sqlmock.NewRows([]string{"users.id", "users.name", "addresses.street"}).
+							AddRow(1, "Tom", "Street Name"),
+					).
+					RowsWillBeClosed()
+			},
+		},
 	}
 
 	for _, test := range tests {

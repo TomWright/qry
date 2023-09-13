@@ -13,9 +13,31 @@ type SelectQuery struct {
 	Fields    []Field
 	Table     string
 	Condition Condition
+	Join      []Join
 	OrderBy   []OrderBy
 	Limit     int64
 	Offset    int64
+}
+
+type Join struct {
+	Table string
+	On    Condition
+	Type  string
+}
+
+func (j Join) Build() (string, []any) {
+	var kind = j.Type
+	if kind != "" {
+		kind = kind + " "
+	}
+
+	conditionsStmt, conditionArgs := j.On.Build()
+	return fmt.Sprintf(
+		"%sJOIN %s ON %s",
+		kind,
+		j.Table,
+		conditionsStmt,
+	), conditionArgs
 }
 
 func (query SelectQuery) Build() (string, []any) {
@@ -26,6 +48,14 @@ func (query SelectQuery) Build() (string, []any) {
 	)
 
 	args := make([]any, 0)
+
+	if len(query.Join) > 0 {
+		for _, join := range query.Join {
+			joinStmt, joinArgs := join.Build()
+			stmt += fmt.Sprintf(" %s", joinStmt)
+			args = append(args, joinArgs...)
+		}
+	}
 
 	if query.Condition != nil {
 		if conditionsStmt, conditionArgs := query.Condition.Build(); len(conditionsStmt) > 0 {
